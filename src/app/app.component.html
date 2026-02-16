@@ -1,0 +1,46 @@
+<div class="container">
+  <h1>{{ title }}</h1>
+
+  <div *ngIf="loading" class="loading">
+    Loading banking requests...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Phone Number</th>
+          <th>Client Name</th>
+          <th>Email</th>
+          <th>Service Type</th>
+          <th>Modification Type</th>
+          <th>Other Message</th>
+          <th>Status</th>
+          <th>Created Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let request of bankingRequests">
+          <td>{{ request.id }}</td>
+          <td>{{ request.phoneNumber }}</td>
+          <td>{{ request.clientName }}</td>
+          <td>{{ request.email }}</td>
+          <td>{{ request.serviceType }}</td>
+          <td>{{ request.modificationType }}</td>
+          <td>{{ request.otherMessage }}</td>
+          <td>{{ request.status }}</td>
+          <td>{{ request.createdDate }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="bankingRequests.length === 0" class="no-data">
+      No banking requests found.
+    </div>
+  </div>
+</div>
