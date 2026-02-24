@@ -1,0 +1,254 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:host {
+  display: block;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #eef2ee;
+  min-height: 100vh;
+}
+
+
+.container {
+  padding: 30px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #1a237e;
+  text-align: center;
+  letter-spacing: 1px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(30, 60, 114, 0.1);
+}
+
+table {
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.search-field {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 24px;
+  background: white;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.search-field:hover {
+  box-shadow: 0 6px 20px rgba(30, 60, 114, 0.1);
+  transform: translateY(-2px);
+}
+
+::ng-deep .search-field .mat-mdc-text-field-wrapper {
+  background-color: white !important;
+  border-radius: 30px !important;
+  padding: 0 16px !important;
+  height: 50px !important;
+}
+
+::ng-deep .search-field .mdc-notched-outline__leading,
+::ng-deep .search-field .mdc-notched-outline__notch,
+::ng-deep .search-field .mdc-notched-outline__trailing {
+  border: none !important;
+}
+
+::ng-deep .search-field .mat-mdc-form-field-icon-prefix {
+  padding: 0 8px 0 0;
+  color: #1a237e;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+::ng-deep .search-field .mat-mdc-input-element {
+  font-family: 'Segoe UI', sans-serif !important;
+  font-size: 15px !important;
+  color: #333 !important;
+  height: 100% !important;
+}
+
+::ng-deep .search-field .mat-mdc-form-field-flex {
+  height: 100% !important;
+  align-items: center !important;
+}
+
+.loading, .error, .no-data {
+  padding: 40px 20px;
+  font-size: 16px;
+  text-align: center;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.error { color: #d32f2f; border-left: 4px solid #d32f2f; }
+.loading { color: #666; }
+.no-data { color: #999; }
+
+.mat-elevation-z8 {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18) !important;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.5s ease-out;
+}
+
+th.mat-header-cell {
+  font-weight: 700;
+  font-size: 12px;
+  color: #1e3c72 !important;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 18px 16px !important;
+  border-bottom: 2px solid rgba(30, 60, 114, 0.2) !important;
+}
+
+td.mat-cell {
+  color: #424242;
+  font-size: 14px;
+  padding: 16px !important;
+  border-bottom: 1px solid #e8e8e8;
+  transition: all 0.2s ease;
+}
+
+tr.mat-row {
+  transition: all 0.3s ease;
+}
+
+tr.mat-row:hover {
+  background: linear-gradient(90deg, rgba(30, 60, 114, 0.05) 0%, rgba(30, 60, 114, 0.02) 100%);
+}
+
+tr.mat-row:nth-child(even) { background-color: #fafbfc; }
+
+/* Cellules cliquables */
+.clickable-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: #1565C0;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.clickable-cell:hover {
+  background: rgba(21, 101, 192, 0.08);
+  border-color: rgba(21, 101, 192, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(21, 101, 192, 0.2);
+}
+
+.clickable-cell.code-client {
+  color: #004d40;
+  font-family: 'Courier New', monospace;
+}
+
+.clickable-cell.code-client:hover {
+  background: rgba(0, 77, 64, 0.08);
+  border-color: rgba(0, 77, 64, 0.25);
+  box-shadow: 0 3px 8px rgba(0, 77, 64, 0.2);
+}
+
+/* Status badge */
+.status-badge {
+  display: inline-block;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+}
+
+.status-pending  { background: linear-gradient(135deg, #FFF4E5, #FFE8CC); color: #E65100; border: 2px solid #FFB74D; }
+.status-validated{ background: linear-gradient(135deg, #E8F5E9, #C8E6C9); color: #2E7D32; border: 2px solid #81C784; }
+.status-processed{ background: linear-gradient(135deg, #E3F2FD, #BBDEFB); color: #1565C0; border: 2px solid #64B5F6; }
+.status-rejected { background: linear-gradient(135deg, #FFEBEE, #FFCDD2); color: #C62828; border: 2px solid #E57373; }
+
+/* Service badge */
+.service-badge {
+  display: inline-block;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+}
+
+.service-mobile { background: linear-gradient(135deg, #DCEDC8, #C5E1A5); color: #33691E; border: 2px solid #AED581; }
+.service-web    { background: linear-gradient(135deg, #E3F2FD, #90CAF9); color: #0D47A1; border: 2px solid #42A5F5; }
+
+/* Reference badge */
+.reference-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ffffff, #f4f6f8);
+  color: #37474f;
+  border: 1.5px solid #cfd8dc;
+  border-radius: 20px;
+  padding: 5px 12px 5px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.reference-badge:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14);
+  transform: translateY(-1px);
+}
+
+.ref-icon {
+  font-size: 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+  line-height: 14px !important;
+  color: #78909c;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1200px) {
+  .container { padding: 20px; }
+  h1 { font-size: 24px; }
+  th.mat-header-cell, td.mat-cell { font-size: 12px; padding: 12px 10px !important; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 15px; }
+  h1 { font-size: 20px; padding: 15px; }
+  th.mat-header-cell, td.mat-cell { font-size: 11px; padding: 10px 8px !important; }
+}

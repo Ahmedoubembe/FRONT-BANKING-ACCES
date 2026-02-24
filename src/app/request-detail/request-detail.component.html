@@ -1,0 +1,233 @@
+<div class="detail-container" *ngIf="request">
+
+  <!-- Header -->
+  <div class="detail-header">
+    <button class="back-btn" (click)="goBack()">
+      <span class="back-icon">&#8592;</span> Retour
+    </button>
+    <div class="header-title">
+      <h1>Détail de la Demande <span class="request-id">{{ request.reference }}</span></h1>
+      <div class="header-badges">
+        <span class="service-badge" [ngClass]="getServiceClass(request.serviceType)">
+          {{ request.serviceType }}
+        </span>
+          <span class="status-badge" [ngClass]="getStatusClass(request.status)">
+          {{ getStatusLabel(request.status) }}
+        </span>
+      </div>
+    </div>
+    <button class="print-btn" (click)="printRequest()" title="Imprimer / Exporter en PDF">
+      🖨️ Imprimer PDF
+    </button>
+  </div>
+
+
+  <div class="sections-wrapper">
+
+    <!-- Section 1 : Informations Client (saisies) -->
+    <div class="info-card client-card">
+      <div class="card-header client-header">
+        <div class="card-icon">👤</div>
+        <div>
+          <h2>Informations Client</h2>
+          <p class="card-subtitle">Données saisies par le client lors de la demande</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+
+          <div class="info-item">
+            <span class="info-label">📞 Téléphone</span>
+            <span class="info-value phone-value">{{ request.phoneNumber }}</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">👤 Nom Client</span>
+            <span class="info-value">{{ request.clientName || '—' }}</span>
+          </div>
+
+          <div class="info-item full-width">
+            <span class="info-label">✉️ Email</span>
+            <span class="info-value email-value">{{ request.email || '—' }}</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">🏦 Type de Service</span>
+            <span class="service-badge" [ngClass]="getServiceClass(request.serviceType)">
+              {{ request.serviceType }}
+            </span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">🔧 Type de Modification</span>
+            <span class="info-value modification-value">{{ request.modificationType || '—' }}</span>
+          </div>
+
+          <div class="info-item full-width" *ngIf="request.otherMessage">
+            <span class="info-label">💬 Message</span>
+            <span class="info-value message-value">{{ request.otherMessage }}</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">📅 Date de Création</span>
+            <span class="info-value date-value">{{ request.createdDate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+
+          <div class="info-item" *ngIf="request.updatedDate">
+            <span class="info-label">🔄 Dernière Mise à Jour</span>
+            <span class="info-value date-value">{{ request.updatedDate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2 : Informations Système -->
+    <div class="info-card system-card">
+      <div class="card-header system-header">
+        <div class="card-icon">🖥️</div>
+        <div>
+          <h2>Informations Système</h2>
+          <p class="card-subtitle">Données récupérées depuis le système bancaire</p>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div *ngIf="hasSystemInfo(); else noSystemInfo">
+          <div class="info-grid">
+
+            <div class="info-item">
+              <span class="info-label">🆔 Code Client (custIden)</span>
+              <span class="info-value cust-value">{{ request.custIden || '—' }}</span>
+            </div>
+
+            <div class="info-item">
+              <span class="info-label">👤 Prénom</span>
+              <span class="info-value">{{ request.firstName || '—' }}</span>
+            </div>
+
+            <div class="info-item">
+              <span class="info-label">👤 Nom</span>
+              <span class="info-value">{{ request.lastName || '—' }}</span>
+            </div>
+
+            <div class="info-item full-width">
+              <span class="info-label">✉️ Email Système</span>
+              <span class="info-value email-value">{{ request.emailSys || '—' }}</span>
+            </div>
+
+            <div class="info-item">
+              <span class="info-label">🏦 Agence</span>
+              <span class="info-value">{{ request.agence || '—' }}</span>
+            </div>
+
+          </div>
+        </div>
+
+        <ng-template #noSystemInfo>
+          <div class="no-system-info">
+            <span class="no-info-icon">⚠️</span>
+            <p>Aucune donnée système trouvée pour ce numéro de téléphone.</p>
+            <p class="no-info-sub">Le client n'est peut-être pas encore enregistré dans le système.</p>
+          </div>
+        </ng-template>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       Section 3 : Chargement des Justificatifs
+  ════════════════════════════════════════════════════ -->
+  <div class="upload-card" [class.closed]="closeSuccess">
+
+    <div class="upload-card-header">
+      <div class="card-icon">📎</div>
+      <div>
+        <h2>Justificatifs</h2>
+        <p class="card-subtitle">Charger le(s) document(s) signé(s) par le chef d'agence</p>
+      </div>
+    </div>
+
+    <div class="upload-card-body">
+
+      <!-- Zone drag & drop -->
+      <div *ngIf="!uploadSuccess"
+           class="drop-zone"
+           [class.drag-over]="isDragOver"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave()"
+           (drop)="onDrop($event)">
+        <div class="drop-icon">☁️</div>
+        <p class="drop-text">Glisser-déposer vos fichiers ici</p>
+        <p class="drop-sub">PDF, JPG, PNG — max 10 Mo par fichier</p>
+        <label class="browse-btn">
+          📂 Parcourir
+          <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png"
+                 (change)="onFilesSelected($event)" hidden>
+        </label>
+      </div>
+
+      <!-- Message d'erreur type de fichier -->
+      <div *ngIf="uploadError" class="upload-error">
+        ⚠️ {{ uploadError }}
+      </div>
+
+      <!-- Liste des fichiers sélectionnés (en attente d'upload) -->
+      <div *ngIf="selectedFiles.length > 0 && !uploadSuccess" class="file-list">
+        <p class="file-list-title">Fichiers sélectionnés ({{ selectedFiles.length }})</p>
+        <div class="file-item" *ngFor="let file of selectedFiles; let i = index">
+          <span class="file-icon">{{ getFileIcon(file) }}</span>
+          <div class="file-info">
+            <span class="file-name">{{ file.name }}</span>
+            <span class="file-size">{{ formatSize(file.size) }}</span>
+          </div>
+          <button class="remove-btn" (click)="removeFile(i)" title="Retirer">✕</button>
+        </div>
+      </div>
+
+      <!-- Bouton upload -->
+      <div *ngIf="selectedFiles.length > 0 && !uploadSuccess" class="upload-actions">
+        <button class="upload-btn" (click)="uploadFiles()" [disabled]="uploading">
+          <span *ngIf="!uploading">⬆️ Charger les fichiers</span>
+          <span *ngIf="uploading" class="spinner-text">⏳ Chargement en cours...</span>
+        </button>
+      </div>
+
+      <!-- ✅ Upload réussi : liste des fichiers uploadés -->
+      <div *ngIf="uploadSuccess" class="upload-success-block">
+        <div class="success-header">✅ Justificatifs chargés avec succès</div>
+        <div class="uploaded-file-item" *ngFor="let name of uploadedFileNames">
+          <span class="file-icon">📄</span>
+          <span class="file-name">{{ name }}</span>
+        </div>
+      </div>
+
+      <!-- Erreur clôture -->
+      <div *ngIf="closeError" class="upload-error">
+        ⚠️ {{ closeError }}
+      </div>
+
+      <!-- ✅ Demande clôturée -->
+      <div *ngIf="closeSuccess" class="close-success-block">
+        🎉 Demande clôturée et marquée comme <strong>TRAITÉE</strong>
+      </div>
+
+      <!-- Bouton Clôturer -->
+      <div *ngIf="canClose()" class="close-action">
+        <button class="close-btn" (click)="closeRequest()" [disabled]="closing">
+          <span *ngIf="!closing">✅ Clôturer la Demande</span>
+          <span *ngIf="closing">⏳ Clôture en cours...</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Fallback si aucune demande -->
+<div class="not-found" *ngIf="!request">
+  <p>Demande introuvable. <a (click)="goBack()" class="link">Retour à la liste</a></p>
+</div>

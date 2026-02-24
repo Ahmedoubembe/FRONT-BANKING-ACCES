@@ -16,6 +16,7 @@ import { environment } from '../../environments/environment';
 })
 export class BankingRequestService {
   private apiUrl = environment.apiUrl + '/all';
+  private baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
@@ -23,5 +24,15 @@ export class BankingRequestService {
     return this.http.get<BankingRequestResponse>(this.apiUrl).pipe(
       map((response: BankingRequestResponse) => response.data)
     );
+  }
+
+  uploadJustificatifs(id: number, files: File[]): Observable<any> {
+    const formData = new FormData();
+    files.forEach(file => formData.append('files', file, file.name));
+    return this.http.post(`${this.baseUrl}/${id}/justificatifs`, formData);
+  }
+
+  closeRequest(id: number): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/${id}/close`, {});
   }
 }
