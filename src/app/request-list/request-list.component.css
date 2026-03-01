@@ -76,6 +76,13 @@ table {
   height: 100%;
 }
 
+.search-icon-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+
 ::ng-deep .search-field .mat-mdc-input-element {
   font-family: 'Segoe UI', sans-serif !important;
   font-size: 15px !important;
@@ -137,6 +144,12 @@ tr.mat-row:hover {
 }
 
 tr.mat-row:nth-child(even) { background-color: #fafbfc; }
+
+/* Cellule neutre (sans couleur) cliquable */
+.plain-cell {
+  cursor: pointer;
+  display: inline-block;
+}
 
 /* Cellules cliquables */
 .clickable-cell {

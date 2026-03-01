@@ -143,7 +143,7 @@
   <div class="upload-card" [class.closed]="closeSuccess">
 
     <div class="upload-card-header">
-      <div class="card-icon">📎</div>
+      <div class="card-icon"><img src="assets/paperclip.png" alt="Justificatifs" class="card-icon-img"></div>
       <div>
         <h2>Justificatifs</h2>
         <p class="card-subtitle">Charger le(s) document(s) signé(s) par le chef d'agence</p>
@@ -202,6 +202,11 @@
           <span class="file-icon">📄</span>
           <span class="file-name">{{ name }}</span>
         </div>
+        <div class="change-file-action" *ngIf="!closeSuccess">
+          <button class="change-btn" (click)="resetUpload()" title="Remplacer les fichiers chargés">
+            🔄 Changer les fichiers
+          </button>
+        </div>
       </div>
 
       <!-- Erreur clôture -->
@@ -211,7 +216,7 @@
 
       <!-- ✅ Demande clôturée -->
       <div *ngIf="closeSuccess" class="close-success-block">
-        🎉 Demande clôturée et marquée comme <strong>TRAITÉE</strong>
+        Demande clôturée et marquée comme <strong>TRAITÉE</strong>
       </div>
 
       <!-- Bouton Clôturer -->

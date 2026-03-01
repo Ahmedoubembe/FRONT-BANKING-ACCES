@@ -103,6 +103,13 @@ export class RequestDetailComponent implements OnInit {
     return (bytes / (1024 * 1024)).toFixed(1) + ' Mo';
   }
 
+  resetUpload(): void {
+    this.uploadSuccess = false;
+    this.uploadedFileNames = [];
+    this.selectedFiles = [];
+    this.uploadError = null;
+  }
+
   canUpload(): boolean {
     return this.selectedFiles.length > 0 && !this.uploading && !this.uploadSuccess;
   }

@@ -11,7 +11,7 @@
 
   <div *ngIf="!loading && !error">
     <mat-form-field appearance="outline" class="search-field" subscriptSizing="dynamic">
-      <mat-icon matPrefix>search</mat-icon>
+      <img matPrefix src="assets/search.png" alt="Rechercher" class="search-icon-img">
       <input matInput (keyup)="applyFilter($event)" placeholder="Rechercher (nom, téléphone, email...)" #input>
     </mat-form-field>
 
@@ -27,8 +27,7 @@
       <ng-container matColumnDef="reference">
         <th mat-header-cell *matHeaderCellDef> Référence </th>
         <td mat-cell *matCellDef="let element">
-          <span class="reference-badge" (click)="navigateToDetail(element)" title="Voir le détail">
-            <mat-icon class="ref-icon">tag</mat-icon>
+          <span class="plain-cell" (click)="navigateToDetail(element)" title="Voir le détail">
             {{ element.reference || '—' }}
           </span>
         </td>

@@ -392,6 +392,7 @@
   margin-bottom: 4px;
 }
 .upload-card-header .card-subtitle { font-size: 12px; color: #BF360C; }
+.card-icon-img { width: 32px; height: 32px; object-fit: contain; }
 .upload-card-body {
   padding: 24px;
   display: flex;
@@ -423,20 +424,20 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: linear-gradient(135deg, #1a237e, #283593);
-  color: white;
-  border: none;
+  background: linear-gradient(135deg, #ffffff, #f5f5f5);
+  color: #424242;
+  border: 1.5px solid #BDBDBD;
   border-radius: 8px;
   padding: 9px 20px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 3px 8px rgba(26, 35, 126, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 .browse-btn:hover {
-  background: linear-gradient(135deg, #0d1657, #1a237e);
-  box-shadow: 0 5px 14px rgba(26, 35, 126, 0.4);
+  background: linear-gradient(135deg, #f5f5f5, #eeeeee);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
 }
 
@@ -505,6 +506,28 @@
 }
 .success-header { font-size: 14px; font-weight: 700; color: #2E7D32; margin-bottom: 10px; }
 .uploaded-file-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; font-size: 13px; color: #388E3C; }
+
+/* ── Bouton Changer les fichiers ────── */
+.change-file-action { display: flex; justify-content: flex-end; margin-top: 10px; }
+.change-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1.5px solid #E65100;
+  color: #E65100;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.change-btn:hover {
+  background: #FFF3E0;
+  box-shadow: 0 2px 8px rgba(230, 81, 0, 0.2);
+  transform: translateY(-1px);
+}
 
 /* ── Erreurs ────────────────────────── */
 .upload-error {
