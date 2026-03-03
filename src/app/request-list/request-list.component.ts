@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { BankingRequestService } from '../services/banking-request.service';
 import { BankingRequest } from '../models/banking-request.model';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-request-list',
@@ -29,8 +30,17 @@ export class RequestListComponent implements OnInit {
 
   constructor(
     private bankingRequestService: BankingRequestService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
+
+  getUserInfo() {
+    return this.authService.getUserInfo();
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
 
   ngOnInit(): void {
     this.loadBankingRequests();

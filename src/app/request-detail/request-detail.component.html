@@ -16,7 +16,7 @@
         </span>
       </div>
     </div>
-    <button class="print-btn" (click)="printRequest()" title="Imprimer / Exporter en PDF">
+    <button class="print-btn" *ngIf="!isAdmin" (click)="printRequest()" title="Imprimer / Exporter en PDF">
       🖨️ Imprimer PDF
     </button>
   </div>
@@ -140,13 +140,21 @@
   <!-- ═══════════════════════════════════════════════════
        Section 3 : Chargement des Justificatifs
   ════════════════════════════════════════════════════ -->
-  <div class="upload-card" [class.closed]="closeSuccess">
+
+  <!-- Bandeau lecture seule pour ROLE_ADMIN -->
+  <div *ngIf="isAdmin" class="admin-readonly-banner">
+    🔒 Mode consultation — Vous êtes connecté en tant qu’<strong>Administrateur</strong>.
+    Les actions (chargement de fichiers, clôture, impression PDF) sont réservées aux gestionnaires.
+  </div>
+
+  <!-- Section upload : visible uniquement pour ROLE_GESTIONNAIRE -->
+  <div *ngIf="!isAdmin" class="upload-card" [class.closed]="closeSuccess">
 
     <div class="upload-card-header">
       <div class="card-icon"><img src="assets/paperclip.png" alt="Justificatifs" class="card-icon-img"></div>
       <div>
         <h2>Justificatifs</h2>
-        <p class="card-subtitle">Charger le(s) document(s) signé(s) par le chef d'agence</p>
+        <p class="card-subtitle">Charger le(s) document(s) signé(s) par le chef d’agence</p>
       </div>
     </div>
 

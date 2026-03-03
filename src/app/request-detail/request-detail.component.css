@@ -577,3 +577,28 @@
   text-align: center;
   animation: fadeInUp 0.4s ease-out;
 }
+
+/* ══════════════════════════════════════
+   BANDEAU LECTURE SEULE (ROLE_ADMIN)
+══════════════════════════════════════ */
+.admin-readonly-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #FFF8E1, #FFF3CD);
+  border: 1.5px solid #FFD54F;
+  border-left: 5px solid #F9A825;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #5D4037;
+  box-shadow: 0 3px 10px rgba(249, 168, 37, 0.15);
+  animation: fadeInUp 0.4s ease-out 0.3s both;
+}
+
+.admin-readonly-banner strong {
+  color: #E65100;
+  font-weight: 700;
+}

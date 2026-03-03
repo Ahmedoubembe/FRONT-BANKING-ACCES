@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BankingRequest } from '../models/banking-request.model';
 import { BankingRequestService } from '../services/banking-request.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-request-detail',
@@ -28,8 +29,14 @@ export class RequestDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private bankingService: BankingRequestService
+    private bankingService: BankingRequestService,
+    private authService: AuthService
   ) {}
+
+  /** Retourne true si l'utilisateur connecté a le rôle ROLE_ADMIN */
+  get isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');

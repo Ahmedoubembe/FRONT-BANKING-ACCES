@@ -1,0 +1,81 @@
+<div class="login-bg">
+  <div class="login-card">
+
+    <div class="login-header">
+      <div class="bank-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="48" height="48">
+          <rect width="48" height="48" rx="12" fill="#1a237e"/>
+          <path d="M8 20L24 10L40 20V22H8V20Z" fill="white"/>
+          <rect x="11" y="25" width="4" height="12" rx="1" fill="white"/>
+          <rect x="22" y="25" width="4" height="12" rx="1" fill="white"/>
+          <rect x="33" y="25" width="4" height="12" rx="1" fill="white"/>
+          <rect x="8" y="37" width="32" height="3" rx="1.5" fill="white"/>
+        </svg>
+      </div>
+      <h1 class="login-title">ACCES MOBILE-WEB BANKING</h1>
+      <p class="login-subtitle">Connectez-vous pour accéder à l'espace de gestion</p>
+    </div>
+
+    <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+
+      <div class="form-group">
+        <label for="loginInput">Login</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <input
+            id="loginInput"
+            type="text"
+            [(ngModel)]="login"
+            name="login"
+            placeholder="Votre identifiant"
+            autocomplete="username"
+            [disabled]="loading"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="passwordInput">Mot de passe</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <input
+            id="passwordInput"
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Votre mot de passe"
+            autocomplete="current-password"
+            [disabled]="loading"
+            required
+          />
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-alert">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <button type="submit" class="login-btn" [disabled]="loading">
+        <span *ngIf="!loading">Se connecter</span>
+        <span *ngIf="loading" class="spinner-wrapper">
+          <span class="spinner"></span>
+          Connexion en cours...
+        </span>
+      </button>
+
+    </form>
+
+  </div>
+</div>
