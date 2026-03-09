@@ -57,17 +57,22 @@ export class RequestListComponent implements OnInit {
   loadBankingRequests(): void {
     this.loading = true;
     this.error = null;
-    this.bankingRequestService.getAllBankingRequests().subscribe({
-      next: (data: BankingRequest[]) => {
-        this.dataSource.data = data;
-        this.loading = false;
-      },
-      error: (err: any) => {
-        this.error = 'Impossible de charger les demandes. Vérifiez que le serveur backend est démarré.';
-        this.loading = false;
-        console.error('Error loading banking requests:', err);
-      }
-    });
+    try {
+      this.bankingRequestService.getRequestsByAgence().subscribe({
+        next: (data: BankingRequest[]) => {
+          this.dataSource.data = data;
+          this.loading = false;
+        },
+        error: (err: any) => {
+          this.error = 'Impossible de charger les demandes de votre agence. Vérifiez que le serveur backend est démarré.';
+          this.loading = false;
+          console.error('Erreur lors du chargement des demandes par agence :', err);
+        }
+      });
+    } catch (e: any) {
+      this.error = e.message ?? 'Aucune agence associée à cet utilisateur.';
+      this.loading = false;
+    }
   }
 
   navigateToDetail(request: BankingRequest): void {

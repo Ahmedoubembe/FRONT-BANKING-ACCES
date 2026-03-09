@@ -12,6 +12,7 @@ export interface AuthResponse {
   prenom: string;
   nom: string;
   email: string;
+  agence: string;
   roles: string[];
 }
 
@@ -31,6 +32,7 @@ export class AuthService {
         const user = {
           username: `${response.prenom} ${response.nom}`.trim() || response.nomUtilisateur,
           nomUtilisateur: response.nomUtilisateur,
+          agence: response.agence ?? '',
           roles: response.roles ?? []
         };
         localStorage.setItem('user', JSON.stringify(user));
@@ -52,7 +54,7 @@ export class AuthService {
     return localStorage.getItem('token')?.trim() ?? null;
   }
 
-  getUserInfo(): { username: string; roles: string[] } | null {
+  getUserInfo(): { username: string; nomUtilisateur: string; agence: string; roles: string[] } | null {
     const userStr = localStorage.getItem('user');
     if (!userStr) return null;
     try {
@@ -60,6 +62,10 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  getAgence(): string | null {
+    return this.getUserInfo()?.agence ?? null;
   }
 
   hasRole(role: string): boolean {

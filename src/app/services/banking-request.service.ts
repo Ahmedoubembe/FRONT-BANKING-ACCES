@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BankingRequest } from '../models/banking-request.model';
+import { AuthService } from './auth.service';
 
 interface BankingRequestResponse {
   total: number;
@@ -18,7 +19,22 @@ export class BankingRequestService {
   private apiUrl = environment.apiUrl + '/all';
   private baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
+
+  /** Récupère les demandes filtrées par agence de l'utilisateur connecté. */
+  getRequestsByAgence(): Observable<BankingRequest[]> {
+    const agence = this.authService.getAgence();
+    const token = this.authService.getToken();
+    if (!agence) {
+      throw new Error('Aucune agence trouvée pour cet utilisateur.');
+    }
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http
+      .get<BankingRequestResponse>(`${this.baseUrl}/agence/${encodeURIComponent(agence)}`, { headers })
+      .pipe(map((response: BankingRequestResponse) => response.data));
+  }
 
   getAllBankingRequests(): Observable<BankingRequest[]> {
     return this.http.get<BankingRequestResponse>(this.apiUrl).pipe(
