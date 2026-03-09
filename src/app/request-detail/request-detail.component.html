@@ -3,21 +3,28 @@
   <!-- Header -->
   <div class="detail-header">
     <button class="back-btn" (click)="goBack()">
-      <span class="back-icon">&#8592;</span> Retour
+      <span class="back-arrow">&#8592;</span>
+      <span>Retour</span>
     </button>
+
+    <div class="header-divider"></div>
+
     <div class="header-title">
-      <h1>Détail de la Demande <span class="request-id">{{ request.reference }}</span></h1>
+      <p class="header-label">Détail de la Demande</p>
+      <h1 class="header-ref">{{ request.reference }}</h1>
       <div class="header-badges">
         <span class="service-badge" [ngClass]="getServiceClass(request.serviceType)">
           {{ request.serviceType }}
         </span>
-          <span class="status-badge" [ngClass]="getStatusClass(request.status)">
+        <span class="status-badge" [ngClass]="getStatusClass(request.status)">
           {{ getStatusLabel(request.status) }}
         </span>
       </div>
     </div>
+
     <button class="print-btn" *ngIf="!isAdmin" (click)="printRequest()" title="Imprimer / Exporter en PDF">
-      🖨️ Imprimer PDF
+      <img src="assets/print-pdf.png" alt="Imprimer PDF" class="print-icon-img">
+      <span>Imprimer PDF</span>
     </button>
   </div>
 
@@ -141,14 +148,51 @@
        Section 3 : Chargement des Justificatifs
   ════════════════════════════════════════════════════ -->
 
-  <!-- Bandeau lecture seule pour ROLE_ADMIN -->
-  <div *ngIf="isAdmin" class="admin-readonly-banner">
+  <!-- Section Justificatifs : lecture seule pour demandes TRAITÉES -->
+  <div *ngIf="request.status === 'PROCESSED'" class="upload-card closed">
+
+    <div class="upload-card-header">
+      <div class="card-icon"><img src="assets/paperclip.png" alt="Justificatifs" class="card-icon-img"></div>
+      <div>
+        <h2>Justificatifs joints</h2>
+        <p class="card-subtitle">Documents chargés lors du traitement de la demande</p>
+      </div>
+    </div>
+
+    <div class="upload-card-body">
+      <!-- Chargement en cours -->
+      <div *ngIf="loadingFiles" class="files-loading">
+        ⏳ Chargement des fichiers...
+      </div>
+
+      <!-- Aucun fichier -->
+      <div *ngIf="!loadingFiles && jointFiles.length === 0" class="no-files-msg">
+        📌 Aucun justificatif trouvé pour cette demande.
+      </div>
+
+      <!-- Liste des fichiers joints -->
+      <div *ngIf="!loadingFiles && jointFiles.length > 0" class="joint-file-list">
+        <p class="file-list-title">Fichiers joints ({{ jointFiles.length }})</p>
+        <div class="joint-file-item" *ngFor="let name of jointFiles" (click)="openPreview(name)" title="Cliquer pour prévisualiser">
+          <span class="file-icon">{{ getJointFileIcon(name) }}</span>
+          <div class="file-info">
+            <span class="file-name">{{ name }}</span>
+            <span class="file-size joint-hint">👁️ Cliquer pour aperçu</span>
+          </div>
+          <span class="preview-arrow">›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bandeau lecture seule pour ROLE_ADMIN (demandes non traitées) -->
+  <div *ngIf="isAdmin && request.status !== 'PROCESSED'" class="admin-readonly-banner">
     🔒 Mode consultation — Vous êtes connecté en tant qu’<strong>Administrateur</strong>.
     Les actions (chargement de fichiers, clôture, impression PDF) sont réservées aux gestionnaires.
   </div>
 
-  <!-- Section upload : visible uniquement pour ROLE_GESTIONNAIRE -->
-  <div *ngIf="!isAdmin" class="upload-card" [class.closed]="closeSuccess">
+  <!-- Section upload : visible uniquement pour ROLE_GESTIONNAIRE et demandes non TRAITÉES -->
+  <div *ngIf="!isAdmin && request.status !== 'PROCESSED'" class="upload-card" [class.closed]="closeSuccess">
 
     <div class="upload-card-header">
       <div class="card-icon"><img src="assets/paperclip.png" alt="Justificatifs" class="card-icon-img"></div>
@@ -243,4 +287,39 @@
 <!-- Fallback si aucune demande -->
 <div class="not-found" *ngIf="!request">
   <p>Demande introuvable. <a (click)="goBack()" class="link">Retour à la liste</a></p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     MODALE APERCu FICHIER
+════════════════════════════════════════════════════ -->
+<div class="preview-overlay" *ngIf="showPreview" (click)="closePreview()">
+  <div class="preview-modal" (click)="$event.stopPropagation()">
+
+    <!-- En-tête de la modale -->
+    <div class="preview-modal-header">
+      <span class="preview-title">
+        <span>{{ getJointFileIcon(previewName) }}</span>
+        {{ previewName }}
+      </span>
+      <button class="preview-close-btn" (click)="closePreview()" title="Fermer">×</button>
+    </div>
+
+    <!-- Contenu aperçu -->
+    <div class="preview-modal-body">
+      <!-- PDF -->
+      <iframe
+        *ngIf="previewType === 'pdf'"
+        [src]="previewUrl"
+        class="preview-iframe"
+        frameborder="0">
+      </iframe>
+      <!-- Image -->
+      <img
+        *ngIf="previewType === 'image'"
+        [src]="previewUrl"
+        class="preview-img"
+        [alt]="previewName">
+    </div>
+
+  </div>
 </div>

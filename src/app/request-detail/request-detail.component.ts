@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DomSanitizer as NgDomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { BankingRequest } from '../models/banking-request.model';
 import { BankingRequestService } from '../services/banking-request.service';
 import { AuthService } from '../services/auth.service';
@@ -26,11 +27,22 @@ export class RequestDetailComponent implements OnInit {
   closeError: string | null = null;
   isDragOver = false;
 
+  // ── Fichiers joints (demande TRAITÉE) ─────────────────────
+  jointFiles: string[] = [];
+  loadingFiles = false;
+
+  // ── Modale aperçu ───────────────────────────────────────
+  previewUrl: SafeResourceUrl | null = null;
+  previewType: 'pdf' | 'image' | null = null;
+  previewName = '';
+  showPreview = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private bankingService: BankingRequestService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sanitizer: NgDomSanitizer
   ) {}
 
   /** Retourne true si l'utilisateur connecté a le rôle ROLE_ADMIN */
@@ -51,7 +63,58 @@ export class RequestDetailComponent implements OnInit {
     }
     if (!this.request) {
       this.router.navigate(['/']);
+      return;
     }
+    // Si la demande est TRAITÉE, charger les fichiers joints
+    if (this.request.status === 'PROCESSED') {
+      this.loadJointFiles();
+    }
+  }
+
+  /** Charge la liste des fichiers joints depuis l'API */
+  loadJointFiles(): void {
+    if (!this.request) return;
+    this.loadingFiles = true;
+    this.bankingService.getJustificatifs(this.request.id).subscribe({
+      next: (files) => {
+        this.jointFiles = files || [];
+        this.loadingFiles = false;
+      },
+      error: () => {
+        this.jointFiles = [];
+        this.loadingFiles = false;
+      }
+    });
+  }
+
+  /** Ouvre l'aperçu d'un fichier joint */
+  openPreview(fileName: string): void {
+    if (!this.request) return;
+    const url = this.bankingService.getJustificatifUrl(this.request.id, fileName);
+    const lower = fileName.toLowerCase();
+    if (lower.endsWith('.pdf')) {
+      this.previewType = 'pdf';
+      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    } else {
+      this.previewType = 'image';
+      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
+    this.previewName = fileName;
+    this.showPreview = true;
+  }
+
+  closePreview(): void {
+    this.showPreview = false;
+    this.previewUrl = null;
+    this.previewType = null;
+    this.previewName = '';
+  }
+
+  getJointFileIcon(fileName: string): string {
+    const lower = fileName.toLowerCase();
+    if (lower.endsWith('.pdf')) return '📄';
+    if (lower.endsWith('.jpg') || lower.endsWith('.jpeg') || lower.endsWith('.png')) return '🖼️';
+    return '📎';
   }
 
   goBack(): void {

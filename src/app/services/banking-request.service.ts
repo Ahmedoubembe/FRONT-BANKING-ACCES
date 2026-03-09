@@ -51,4 +51,14 @@ export class BankingRequestService {
   closeRequest(id: number): Observable<any> {
     return this.http.patch(`${this.baseUrl}/${id}/close`, {});
   }
+
+  /** Récupère la liste des noms de fichiers justificatifs d'une demande */
+  getJustificatifs(id: number): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/${id}/justificatifs`);
+  }
+
+  /** Retourne l'URL pour accéder à un fichier justificatif */
+  getJustificatifUrl(id: number, fileName: string): string {
+    return `${this.baseUrl}/${id}/justificatifs/${encodeURIComponent(fileName)}`;
+  }
 }
