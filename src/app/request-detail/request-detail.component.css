@@ -44,7 +44,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #1a237e, #1565C0, #42A5F5);
+  background: linear-gradient(90deg, #1B5E20, #388E3C, #FBC02D); /* Dégradé vert et or Bamis */
   border-radius: 14px 14px 0 0;
 }
 
@@ -53,9 +53,9 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  background: #EEF0F8;
-  color: #3949AB;
-  border: 1.5px solid #C5CAE9;
+  background: #f3f8f3; /* Vert très clair */
+  color: #2E7D32; /* Vert foncé Bamis */
+  border: 1.5px solid #C8E6C9; /* Bordure verte subtile */
   border-radius: 10px;
   padding: 8px 16px;
   font-size: 13px;
@@ -68,24 +68,24 @@
 }
 
 .back-btn:hover {
-  background: #E3E7F8;
-  border-color: #9FA8DA;
-  color: #1a237e;
-  transform: translateX(-3px);
-  box-shadow: 0 3px 10px rgba(26, 35, 126, 0.12);
+  background: #e4f1e4;
+  color: #1B5E20;
+  border-color: #A5D6A7;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(46, 125, 50, 0.12);
 }
 
-.back-arrow {
-  font-size: 16px;
-  line-height: 1;
+.back-btn:active {
+  transform: translateY(0);
+  background: #C8E6C9;
 }
 
-/* ── Séparateur vertical ──────────────── */
+/* ── Titre et Badges ─────────────────── */
 .header-divider {
-  width: 1.5px;
+  width: 1px;
   height: 38px;
-  background: linear-gradient(to bottom, transparent, #C5CAE9, transparent);
-  flex-shrink: 0;
+  background: linear-gradient(to bottom, rgba(46, 125, 50, 0), rgba(46, 125, 50, 0.2) 50%, rgba(46, 125, 50, 0));
+  margin: 0 4px;
 }
 
 /* ── Titre (label + ref + badges) ────── */
@@ -98,20 +98,26 @@
   min-width: 0;
 }
 
+.header-title-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .header-label {
   font-size: 11px;
   font-weight: 700;
-  color: #7986CB;
+  color: #7CB342; /* Vert clair / olive */
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin: 0 0 2px 0;
+  margin: 0;
   white-space: nowrap;
 }
 
 .header-ref {
   font-size: 18px;
   font-weight: 800;
-  color: #1a237e;
+  color: #1B5E20; /* Vert très foncé */
   margin: 0;
   letter-spacing: 0.5px;
   white-space: nowrap;
@@ -122,7 +128,6 @@
   gap: 8px;
   flex-wrap: wrap;
   align-items: center;
-  margin-left: 4px;
 }
 
 /* ── Bouton Imprimer PDF ─────────────── */
@@ -132,15 +137,15 @@
   gap: 9px;
   margin-left: auto;
   background: rgba(255, 255, 255, 0.85);
-  color: #1a237e;
-  border: 1.5px solid rgba(26, 35, 126, 0.2);
+  color: #1B5E20; /* Vert foncé */
+  border: 1.5px solid rgba(46, 125, 50, 0.2);
   border-radius: 10px;
   padding: 9px 20px;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.22s ease;
-  box-shadow: 0 2px 8px rgba(26, 35, 126, 0.1);
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.08);
   white-space: nowrap;
   flex-shrink: 0;
   letter-spacing: 0.3px;
@@ -148,15 +153,16 @@
 }
 
 .print-btn:hover {
-  background: rgba(255, 255, 255, 1);
-  border-color: rgba(26, 35, 126, 0.4);
-  box-shadow: 0 4px 14px rgba(26, 35, 126, 0.18);
+  background: #ffffff;
+  border-color: #388E3C;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.15);
+  color: #388E3C;
 }
 
 .print-btn:active {
   transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(26, 35, 126, 0.12);
+  background: #f3f8f3;
 }
 
 .print-icon-img {
@@ -201,15 +207,15 @@
 }
 
 .client-header {
-  background: #EEF2FF;
-  color: #1a237e;
-  border-bottom: 2px solid #C5CAE9;
+  background: #f3f8f3; /* Vert très clair Bamis */
+  color: #1B5E20; /* Vert foncé Bamis */
+  border-bottom: 2px solid #C8E6C9;
 }
 
 .system-header {
-  background: #EEF2FF;
-  color: #1a237e;
-  border-bottom: 2px solid #C5CAE9;
+  background: #f3f8f3; /* Vert très clair Bamis */
+  color: #1B5E20; /* Vert foncé Bamis */
+  border-bottom: 2px solid #C8E6C9;
 }
 
 .card-icon {
@@ -220,13 +226,13 @@
 .card-header h2 {
   font-size: 18px;
   font-weight: 700;
-  color: #1a237e;
+  color: #1B5E20; /* Vert foncé Bamis */
   margin-bottom: 4px;
 }
 
 .card-subtitle {
   font-size: 12px;
-  color: #5C6BC0;
+  color: #7CB342; /* Vert olive Bamis */
 }
 
 .card-body {
@@ -330,6 +336,9 @@
 .status-validated{ background: linear-gradient(135deg, #E8F5E9, #C8E6C9); color: #2E7D32; border: 2px solid #81C784; }
 .status-processed{ background: linear-gradient(135deg, #E3F2FD, #BBDEFB); color: #1565C0; border: 2px solid #64B5F6; }
 .status-rejected { background: linear-gradient(135deg, #FFEBEE, #FFCDD2); color: #C62828; border: 2px solid #E57373; }
+.status-client_notifie { background: linear-gradient(135deg, #C8E6C9, #A5D6A7); color: #1B5E20; border: 2px solid #66BB6A; }
+.status-non_demande { background: linear-gradient(135deg, #FFF3E0, #FFE0B2); color: #E65100; border: 2px solid #FFB74D; }
+/* Les classes ci-dessus sont aussi dans styles.css global (pour ngClass dynamique) */
 
 .service-badge {
   display: inline-block;
@@ -443,7 +452,7 @@
   color: #1a237e;
   margin-bottom: 3px;
 }
-.upload-card-header .card-subtitle { font-size: 12px; color: #7986CB; }
+.upload-card-header .card-subtitle { font-size: 12px; color: #7CB342; } /* Vert olive Bamis */
 .card-icon-img { width: 36px; height: 36px; object-fit: contain; filter: none; }
 .upload-card-body {
   padding: 28px;
@@ -454,11 +463,11 @@
 
 /* ── Drop Zone ──────────────────────── */
 .drop-zone {
-  border: 2px dashed #C5CAE9;
+  border: 2px dashed #C8E6C9; /* Vert Bamis Clair */
   border-radius: 14px;
-  padding: 40px 24px;
+  padding: 20px 24px;
   text-align: center;
-  background: linear-gradient(135deg, #F8F9FF 0%, #EEF0FB 100%);
+  background: linear-gradient(135deg, #f3f8f3 0%, #E8F5E9 100%);
   transition: all 0.28s ease;
   cursor: pointer;
   position: relative;
@@ -468,24 +477,24 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(26,35,126,0.04) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(46,125,50,0.04) 0%, transparent 70%);
   pointer-events: none;
 }
 .drop-zone.drag-over {
-  border-color: #3949AB;
-  background: linear-gradient(135deg, #E8EAF6 0%, #C5CAE9 100%);
+  border-color: #2E7D32; /* Vert Bamis */
+  background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
   transform: scale(1.01);
-  box-shadow: 0 0 0 5px rgba(57, 73, 171, 0.12);
+  box-shadow: 0 0 0 5px rgba(46, 125, 50, 0.12);
 }
 .drop-icon  { font-size: 46px; margin-bottom: 12px; display: block; }
-.drop-text  { font-size: 15px; font-weight: 700; color: #1a237e; margin-bottom: 6px; }
-.drop-sub   { font-size: 12px; color: #7986CB; margin-bottom: 20px; letter-spacing: 0.3px; }
+.drop-text  { font-size: 15px; font-weight: 700; color: #1B5E20; margin-bottom: 6px; }
+.drop-sub   { font-size: 12px; color: #7CB342; margin-bottom: 20px; letter-spacing: 0.3px; }
 
 .browse-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #1a237e 0%, #3949AB 100%);
+  background: linear-gradient(135deg, #1B5E20 0%, #388E3C 100%); /* Vert Bamis */
   color: #ffffff;
   border: none;
   border-radius: 10px;
@@ -494,12 +503,12 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.22s ease;
-  box-shadow: 0 4px 12px rgba(26, 35, 126, 0.3);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
   letter-spacing: 0.3px;
 }
 .browse-btn:hover {
-  background: linear-gradient(135deg, #0D1459 0%, #283593 100%);
-  box-shadow: 0 6px 16px rgba(26, 35, 126, 0.45);
+  background: linear-gradient(135deg, #145214 0%, #1B5E20 100%);
+  box-shadow: 0 6px 16px rgba(46, 125, 50, 0.45);
   transform: translateY(-2px);
 }
 
@@ -539,7 +548,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #1565C0, #1976D2);
+  background: linear-gradient(135deg, #388E3C, #1B5E20); /* Vert Bamis */
   color: white;
   border: none;
   border-radius: 10px;
@@ -548,11 +557,11 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(21, 101, 192, 0.35);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.35);
 }
 .upload-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #0D47A1, #1565C0);
-  box-shadow: 0 6px 16px rgba(21, 101, 192, 0.45);
+  background: linear-gradient(135deg, #1B5E20, #145214);
+  box-shadow: 0 6px 16px rgba(46, 125, 50, 0.45);
   transform: translateY(-1px);
 }
 .upload-btn:disabled { opacity: 0.7; cursor: not-allowed; }
@@ -568,6 +577,7 @@
 }
 .success-header { font-size: 14px; font-weight: 700; color: #2E7D32; margin-bottom: 10px; }
 .uploaded-file-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; font-size: 13px; color: #388E3C; }
+.file-icon-img { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
 
 /* ── Bouton Changer les fichiers ────── */
 .change-file-action { display: flex; justify-content: flex-end; margin-top: 10px; }
@@ -773,7 +783,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  background: linear-gradient(135deg, #1a237e 0%, #3949AB 100%);
+  background: linear-gradient(135deg, #1B5E20 0%, #388E3C 100%); /* Vert Bamis */
   border-radius: 16px 16px 0 0;
   gap: 12px;
   flex-shrink: 0;

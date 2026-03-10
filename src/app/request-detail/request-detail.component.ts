@@ -65,8 +65,9 @@ export class RequestDetailComponent implements OnInit {
       this.router.navigate(['/']);
       return;
     }
-    // Si la demande est TRAITÉE, charger les fichiers joints
-    if (this.request.status === 'PROCESSED') {
+    // Charger les fichiers joints si la demande est traitée ou validée
+    const statusesWithFiles = ['PROCESSED', 'TRAITÉE', 'VALIDATED', 'VALIDÉE'];
+    if (statusesWithFiles.includes(this.request.status)) {
       this.loadJointFiles();
     }
   }
@@ -87,32 +88,51 @@ export class RequestDetailComponent implements OnInit {
     });
   }
 
-  /** Ouvre l'aperçu d'un fichier joint */
+  /** Ouvre l'aperçu d'un fichier joint.
+   *  On télécharge le fichier en Blob pour contourner X-Frame-Options. */
   openPreview(fileName: string): void {
     if (!this.request) return;
-    const url = this.bankingService.getJustificatifUrl(this.request.id, fileName);
-    const lower = fileName.toLowerCase();
-    if (lower.endsWith('.pdf')) {
-      this.previewType = 'pdf';
-      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-    } else {
-      this.previewType = 'image';
-      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-    }
     this.previewName = fileName;
-    this.showPreview = true;
+    this.previewType = null;
+    this.previewUrl = null;
+    this.showPreview = true;          // ouvre la modale avec état "chargement"
+
+    this.bankingService.downloadJustificatifBlob(this.request.id, fileName).subscribe({
+      next: (blob) => {
+        // Révoquer l'ancienne blob URL si elle existe
+        const prev = this._blobUrl;
+        if (prev) { URL.revokeObjectURL(prev); }
+
+        const blobUrl = URL.createObjectURL(blob);
+        this._blobUrl = blobUrl;
+        const lower = fileName.toLowerCase();
+        this.previewType = lower.endsWith('.pdf') ? 'pdf' : 'image';
+        this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);
+      },
+      error: () => {
+        this.showPreview = false;
+        alert('Impossible de charger le fichier.');
+      }
+    });
   }
+
+  /** URL brute de la dernière blob créée (pour révocation mémoire) */
+  private _blobUrl: string | null = null;
 
   closePreview(): void {
     this.showPreview = false;
     this.previewUrl = null;
     this.previewType = null;
     this.previewName = '';
+    if (this._blobUrl) {
+      URL.revokeObjectURL(this._blobUrl);
+      this._blobUrl = null;
+    }
   }
 
   getJointFileIcon(fileName: string): string {
     const lower = fileName.toLowerCase();
-    if (lower.endsWith('.pdf')) return '📄';
+    if (lower.endsWith('.pdf')) return 'assets/pdf-icon.png';
     if (lower.endsWith('.jpg') || lower.endsWith('.jpeg') || lower.endsWith('.png')) return '🖼️';
     return '📎';
   }
@@ -162,7 +182,7 @@ export class RequestDetailComponent implements OnInit {
   }
 
   getFileIcon(file: File): string {
-    if (file.type === 'application/pdf') return '📄';
+    if (file.type === 'application/pdf') return 'assets/pdf-icon.png';
     if (file.type.startsWith('image/')) return '🖼️';
     return '📎';
   }
@@ -232,10 +252,12 @@ export class RequestDetailComponent implements OnInit {
 
   getStatusLabel(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'PENDING': 'EN ATTENTE',
-      'VALIDATED': 'VALIDÉE',
-      'PROCESSED': 'TRAITÉE',
-      'REJECTED': 'REJETÉE'
+      'PENDING':        'EN ATTENTE',
+      'VALIDATED':      'VALIDÉE',
+      'PROCESSED':      'TRAITÉE',
+      'REJECTED':       'REJETÉE',
+      'CLIENT NOTIFIÉ': 'CLIENT NOTIFIÉ',
+      'NON DEMANDÉ':    'NON DEMANDÉ'
     };
     return statusMap[status] || status;
   }
@@ -247,7 +269,27 @@ export class RequestDetailComponent implements OnInit {
   }
 
   getStatusClass(status: string): string {
-    return 'status-' + (status || '').toLowerCase();
+    return 'status-' + (status || '').toLowerCase().replace(/ /g, '_');
+  }
+
+  getStatusIcon(status: string): string {
+    if (status === 'CLIENT NOTIFIÉ' || status === 'CLIENT NOTIFIE' || status === 'CLIENT_NOTIFIE') return '✓ ';
+    if (status === 'NON DEMANDÉ'    || status === 'NON DEMANDE'    || status === 'NON_DEMANDE')    return '⚠️ ';
+    return '';
+  }
+
+  getStatusStyle(status: string): { [key: string]: string } {
+    const green  = { background: 'linear-gradient(135deg, #C8E6C9, #A5D6A7)', color: '#1B5E20', border: '2px solid #66BB6A' };
+    const danger  = { background: 'linear-gradient(135deg, #FFCDD2, #EF9A9A)', color: '#B71C1C', border: '2px solid #E53935' };
+    const styles: { [key: string]: { [key: string]: string } } = {
+      'PENDING':        { background: 'linear-gradient(135deg, #FFF4E5, #FFE8CC)', color: '#E65100', border: '2px solid #FFB74D' },
+      'VALIDATED':      { background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)', color: '#2E7D32', border: '2px solid #81C784' },
+      'PROCESSED':      { background: 'linear-gradient(135deg, #E3F2FD, #BBDEFB)', color: '#1565C0', border: '2px solid #64B5F6' },
+      'REJECTED':       { background: 'linear-gradient(135deg, #FFEBEE, #FFCDD2)', color: '#C62828', border: '2px solid #E57373' },
+      'CLIENT NOTIFIÉ': green, 'CLIENT NOTIFIE': green, 'CLIENT_NOTIFIE': green,
+      'NON DEMANDÉ':    danger, 'NON DEMANDE':    danger, 'NON_DEMANDE':    danger
+    };
+    return styles[status] || { background: 'linear-gradient(135deg, #F5F5F5, #EEEEEE)', color: '#616161', border: '2px solid #bdbdbd' };
   }
 
   hasSystemInfo(): boolean {
@@ -275,46 +317,61 @@ export class RequestDetailComponent implements OnInit {
 <html lang="fr">
 <head>
   <meta charset="UTF-8"/>
+  <base href="${window.location.origin}/">
   <title>Demande ${val(r.reference)}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; background: #fff; padding: 30px; font-size: 13px; }
-    .pdf-header { text-align: center; padding: 20px 0 16px; border-bottom: 3px solid #1a237e; margin-bottom: 22px; }
-    .pdf-header h1 { font-size: 20px; font-weight: 800; color: #1a237e; letter-spacing: 1px; }
-    .pdf-header .ref { display: inline-block; margin-top: 6px; background: #f4f6f8; border: 1.5px solid #cfd8dc; border-radius: 20px; padding: 3px 14px; font-size: 12px; font-weight: 700; font-family: 'Courier New', monospace; color: #37474f; }
-    .pdf-header .badges { margin-top: 8px; display: flex; justify-content: center; gap: 10px; }
-    .badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #1B5E20; background: #fff; padding: 30px; font-size: 13px; }
+    .pdf-header { text-align: center; padding: 10px 0 16px; border-bottom: 3.5px solid #FBC02D; margin-bottom: 22px; position: relative; }
+    .pdf-header::after { content: ''; position: absolute; bottom: -3.5px; left: 0; width: 30%; height: 3.5px; background: #1B5E20; }
+    .logo-container { margin-bottom: 12px; }
+    .logo-img { height: 55px; object-fit: contain; }
+    .pdf-header h1 { font-size: 20px; font-weight: 800; color: #1B5E20; letter-spacing: 1px; text-transform: uppercase; }
+    .pdf-header .ref { display: inline-block; margin-top: 8px; background: #f1f8f1; border: 1.5px solid #A5D6A7; border-radius: 20px; padding: 4px 16px; font-size: 13px; font-weight: 700; font-family: 'Courier New', monospace; color: #1B5E20; }
+    .pdf-header .badges { margin-top: 10px; display: flex; justify-content: center; gap: 12px; }
+    .badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    
     .status-pending { background: #FFF4E5; color: #E65100; border: 1.5px solid #FFB74D; }
     .status-validated { background: #E8F5E9; color: #2E7D32; border: 1.5px solid #81C784; }
     .status-processed { background: #E3F2FD; color: #1565C0; border: 1.5px solid #64B5F6; }
     .status-rejected { background: #FFEBEE; color: #C62828; border: 1.5px solid #E57373; }
+    .status-client_notifie { background: #E8F5E9; color: #1B5E20; border: 1.5px solid #81C784; }
+    .status-non_demande { background: #FFF3E0; color: #E65100; border: 1.5px solid #FFB74D; }
+    
     .service-mobile { background: #DCEDC8; color: #33691E; border: 1.5px solid #AED581; }
     .service-web { background: #E3F2FD; color: #0D47A1; border: 1.5px solid #42A5F5; }
-    .section { margin-bottom: 20px; border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden; }
-    .section-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; font-size: 13px; font-weight: 700; }
-    .section-header.client { background: linear-gradient(135deg, #E3F2FD, #BBDEFB); color: #1a237e; }
-    .section-header.system { background: linear-gradient(135deg, #E8F5E9, #C8E6C9); color: #1B5E20; }
-    .section-header.demande { background: linear-gradient(135deg, #FFF8E1, #FFECB3); color: #E65100; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; }
-    .item { padding: 10px 16px; border-bottom: 1px solid #f0f0f0; }
+    
+    .section { margin-bottom: 25px; border: 1px solid #e0e8e0; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+    .section-header { display: flex; align-items: center; gap: 10px; padding: 12px 18px; font-size: 13px; font-weight: 700; border-bottom: 1px solid #e0e8e0; }
+    .section-header.client { background: linear-gradient(135deg, #f1f8f1, #e8f5e9); color: #1B5E20; }
+    .section-header.system { background: linear-gradient(135deg, #f1f8f1, #e8f5e9); color: #1B5E20; border-left: 4px solid #FBC02D; }
+    .section-header.demande { background: linear-gradient(135deg, #f1f8f1, #e8f5e9); color: #1B5E20; border-left: 4px solid #388E3C; }
+    
+    .grid { display: grid; grid-template-columns: 1fr 1fr; background: #fff; }
+    .item { padding: 12px 18px; border-bottom: 1px solid #f5f5f5; }
     .item.full { grid-column: span 2; }
-    .label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #90a4ae; margin-bottom: 3px; }
+    .label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #7CB342; margin-bottom: 4px; }
     .value { font-size: 13px; font-weight: 600; color: #263238; }
-    .pdf-footer { margin-top: 28px; padding-top: 12px; border-top: 1px solid #e0e0e0; display: flex; justify-content: space-between; font-size: 10px; color: #90a4ae; }
-    .no-info { padding: 16px; color: #90a4ae; font-style: italic; text-align: center; }
+    .pdf-footer { margin-top: 35px; padding-top: 15px; border-top: 1px solid #e0e8e0; display: flex; justify-content: space-between; font-size: 10px; color: #78909c; }
+    .no-info { padding: 20px; color: #90a4ae; font-style: italic; text-align: center; background: #fafafa; }
   </style>
 </head>
 <body>
   <div class="pdf-header">
+    <div class="logo-container">
+      <img src="assets/bamis-logo.png" class="logo-img" alt="Bamis Logo">
+    </div>
     <h1>Détail de la Demande Bancaire</h1>
-    <div class="ref"># ${val(r.reference)}</div>
+    <div class="ref">Réf: ${val(r.reference)}</div>
     <div class="badges">
       <span class="badge ${r.serviceType?.includes('MOBILE') ? 'service-mobile' : 'service-web'}">${val(r.serviceType)}</span>
-      <span class="badge status-${(r.status || '').toLowerCase()}">${this.getStatusLabel(r.status)}</span>
+      <span class="badge status-${(r.status || '').toLowerCase().replace(/ /g, '_')}">
+        ${r.status === 'CLIENT NOTIFIE' ? '✓ ' : r.status === 'NON DEMANDE' ? '⚠️ ' : ''}${this.getStatusLabel(r.status)}
+      </span>
     </div>
   </div>
   <div class="section">
-    <div class="section-header client"><span>👤</span> Informations Client (saisies)</div>
+    <div class="section-header client"><span></span> Informations Client (saisies)</div>
     <div class="grid">
       <div class="item"><div class="label">Nom Client</div><div class="value">${val(r.clientName)}</div></div>
       <div class="item"><div class="label">Téléphone</div><div class="value">${val(r.phoneNumber)}</div></div>
@@ -322,7 +379,7 @@ export class RequestDetailComponent implements OnInit {
     </div>
   </div>
   <div class="section">
-    <div class="section-header demande"><span>📋</span> Informations de la Demande</div>
+    <div class="section-header demande"><span></span> Informations de la Demande</div>
     <div class="grid">
       <div class="item"><div class="label">ID</div><div class="value">${val(r.id)}</div></div>
       <div class="item"><div class="label">Référence</div><div class="value">${val(r.reference)}</div></div>
@@ -334,7 +391,7 @@ export class RequestDetailComponent implements OnInit {
     </div>
   </div>
   <div class="section">
-    <div class="section-header system"><span>🖥️</span> Informations Système</div>
+    <div class="section-header system"><span></span> Informations Système</div>
     ${this.hasSystemInfo() ? `
     <div class="grid">
       <div class="item"><div class="label">Code Client</div><div class="value">${val(r.custIden)}</div></div>

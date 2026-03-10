@@ -8,3 +8,25 @@ body {
 * {
   box-sizing: border-box;
 }
+
+/* ============================================
+   BADGES STATUT GLOBAUX (ngClass dynamique)
+   Placés ici pour contourner l'encapsulation Angular
+   ============================================ */
+.status-badge {
+  display: inline-block;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+}
+
+.status-pending   { background: linear-gradient(135deg, #FFF4E5, #FFE8CC) !important; color: #E65100 !important; border: 2px solid #FFB74D !important; }
+.status-validated { background: linear-gradient(135deg, #E8F5E9, #C8E6C9) !important; color: #2E7D32 !important; border: 2px solid #81C784 !important; }
+.status-processed { background: linear-gradient(135deg, #E3F2FD, #BBDEFB) !important; color: #1565C0 !important; border: 2px solid #64B5F6 !important; }
+.status-rejected  { background: linear-gradient(135deg, #FFEBEE, #FFCDD2) !important; color: #C62828 !important; border: 2px solid #E57373 !important; }
+.status-client_notifie { background: linear-gradient(135deg, #C8E6C9, #A5D6A7) !important; color: #1B5E20 !important; border: 2px solid #66BB6A !important; }
+.status-non_demande    { background: linear-gradient(135deg, #FFF3E0, #FFE0B2) !important; color: #E65100 !important; border: 2px solid #FFB74D !important; }

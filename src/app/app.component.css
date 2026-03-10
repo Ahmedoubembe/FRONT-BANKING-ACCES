@@ -16,8 +16,9 @@ body {
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 12px 30px;
-  background: linear-gradient(135deg, #1a237e 0%, #2a5298 100%);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  background: #ffffff; /* Très clair, presque blanc */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-bottom: 3.5px solid #FBC02D; /* Ligne Or Bamis */
   min-height: 60px;
 }
 
@@ -27,14 +28,16 @@ body {
   justify-content: flex-start;
 }
 
-.bank-logo-icon {
-  color: rgba(255, 255, 255, 0.85);
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
-  transition: opacity 0.2s ease;
+.bank-logo-img {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+  transition: transform 0.25s ease;
 }
 
-.bank-logo-icon:hover {
-  opacity: 0.7;
+.bank-logo-img:hover {
+  transform: scale(1.05);
 }
 
 .top-bar-center {
@@ -46,11 +49,10 @@ body {
 .app-title {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 17px;
-  font-weight: 700;
-  color: #ffffff;
+  font-weight: 800;
+  color: #2E7D32; /* Vert Bamis */
   letter-spacing: 2px;
   text-transform: uppercase;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255,255,255,0.08);
   white-space: nowrap;
 }
 
@@ -65,13 +67,13 @@ body {
   display: flex;
   align-items: center;
   gap: 7px;
-  color: rgba(255, 255, 255, 0.9);
+  color: #3d4e6e; /* Gris foncé lisible */
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .user-icon {
-  opacity: 0.8;
+  color: #388E3C; /* Vert pour l'icône utilisateur */
 }
 
 .logout-btn {
@@ -79,9 +81,9 @@ body {
   align-items: center;
   gap: 6px;
   padding: 7px 16px;
-  background: rgba(255, 255, 255, 0.12);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: #f3f8f3; /* Vert très très clair */
+  color: #2E7D32; /* Vert foncé Bamis */
+  border: 1px solid rgba(46, 125, 50, 0.2);
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
@@ -92,10 +94,11 @@ body {
 }
 
 .logout-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: #e4f1e4;
+  border-color: #388E3C;
+  color: #1B5E20;
   transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 8px rgba(46, 125, 50, 0.15);
 }
 
 .logout-btn:active {

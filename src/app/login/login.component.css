@@ -6,8 +6,8 @@
 
 .login-bg {
   min-height: 100vh;
-  /* Utilise le même background que le reste de l'app */
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  /* Fond très léger vert/blanc inspiré de l'image Bamis Digital */
+  background: linear-gradient(135deg, #eef7ee 0%, #f9fbf9 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,14 +47,22 @@
   justify-content: center;
 }
 
-.bank-logo svg {
-  filter: drop-shadow(0 4px 10px rgba(26, 35, 126, 0.3));
+.bank-logo-img {
+  height: 64px; /* Un peu plus grand sur la page login que sur la topbar */
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(26, 35, 126, 0.2));
+  transition: transform 0.25s ease;
+}
+
+.bank-logo-img:hover {
+  transform: scale(1.05);
 }
 
 .login-title {
   font-size: 19px;
   font-weight: 700;
-  color: #1a237e; /* Conserver le bleu navy pour le titre principal */
+  color: #2E7D32; /* Vert foncé Bamis */
   letter-spacing: 0.8px;
   margin-bottom: 8px;
   line-height: 1.3;
@@ -103,7 +111,7 @@
 }
 
 .input-wrapper:focus-within .input-icon {
-  color: #1a237e;
+  color: #388E3C; /* Vert Bamis plus vif */
 }
 
 .input-wrapper input {
@@ -120,9 +128,9 @@
 }
 
 .input-wrapper input:focus {
-  border-color: #1a237e;
+  border-color: #388E3C;
   background: white;
-  box-shadow: 0 0 0 4px rgba(26, 35, 126, 0.1);
+  box-shadow: 0 0 0 4px rgba(56, 142, 60, 0.1); /* Lueur verte */
 }
 
 .input-wrapper input:disabled {
@@ -160,7 +168,7 @@
 .login-btn {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #1a237e 0%, #2a5298 100%);
+  background: linear-gradient(135deg, #388E3C 0%, #4CAF50 100%); /* Dégradé vert principal */
   color: white;
   border: none;
   border-radius: 10px;
@@ -170,23 +178,23 @@
   cursor: pointer;
   letter-spacing: 0.5px;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 14px rgba(26, 35, 126, 0.35);
+  box-shadow: 0 4px 14px rgba(56, 142, 60, 0.35); /* Ombre verte */
   margin-top: 6px;
 }
 
 .login-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(26, 35, 126, 0.45);
-  background: linear-gradient(135deg, #1e2f9e 0%, #2d5fb8 100%);
+  box-shadow: 0 8px 20px rgba(56, 142, 60, 0.45);
+  background: linear-gradient(135deg, #2E7D32 0%, #388E3C 100%); /* Vert plus foncé au survol */
 }
 
 .login-btn:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 3px 8px rgba(26, 35, 126, 0.3);
+  box-shadow: 0 3px 8px rgba(56, 142, 60, 0.3);
 }
 
 .login-btn:disabled {
-  background: linear-gradient(135deg, #7c8ec4 0%, #8fa3d4 100%);
+  background: linear-gradient(135deg, #A5D6A7 0%, #C8E6C9 100%); /* Vert très pâle / grisâtre */
   cursor: not-allowed;
   box-shadow: none;
   transform: none;

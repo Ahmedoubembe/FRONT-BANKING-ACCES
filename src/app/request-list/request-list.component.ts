@@ -60,7 +60,7 @@ export class RequestListComponent implements OnInit {
     try {
       this.bankingRequestService.getRequestsByAgence().subscribe({
         next: (data: BankingRequest[]) => {
-          this.dataSource.data = data;
+          this.dataSource.data = data.reverse();
           this.loading = false;
         },
         error: (err: any) => {
@@ -82,12 +82,43 @@ export class RequestListComponent implements OnInit {
 
   getStatusLabel(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'PENDING': 'EN ATTENTE',
-      'VALIDATED': 'VALIDÉE',
-      'PROCESSED': 'TRAITÉE',
-      'REJECTED': 'REJETÉE'
+      'PENDING':        'EN ATTENTE',
+      'VALIDATED':      'VALIDÉE',
+      'PROCESSED':      'TRAITÉE',
+      'REJECTED':       'REJETÉE',
+      'CLIENT NOTIFIÉ': 'CLIENT NOTIFIÉ',
+      'NON DEMANDÉ':    'NON DEMANDÉ'
     };
     return statusMap[status] || status;
+  }
+
+  getStatusClass(status: string): string {
+    return 'status-' + (status || '').toLowerCase().replace(/ /g, '_');
+  }
+
+  getStatusIcon(status: string): string {
+    if (status === 'CLIENT NOTIFIÉ') return '✓ ';
+    if (status === 'NON DEMANDÉ')    return '';
+    return '';
+  }
+
+  getStatusStyle(status: string): { [key: string]: string } {
+    const green  = { background: 'linear-gradient(135deg, #C8E6C9, #A5D6A7)', color: '#1B5E20', border: '2px solid #66BB6A' };
+    const danger  = { background: 'linear-gradient(135deg, #FFCDD2, #EF9A9A)', color: '#B71C1C', border: '2px solid #E53935' };
+    const styles: { [key: string]: { [key: string]: string } } = {
+      'PENDING':        { background: 'linear-gradient(135deg, #FFF4E5, #FFE8CC)', color: '#E65100', border: '2px solid #FFB74D' },
+      'VALIDATED':      { background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)', color: '#2E7D32', border: '2px solid #81C784' },
+      'PROCESSED':      { background: 'linear-gradient(135deg, #E3F2FD, #BBDEFB)', color: '#1565C0', border: '2px solid #64B5F6' },
+      'REJECTED':       { background: 'linear-gradient(135deg, #FFEBEE, #FFCDD2)', color: '#C62828', border: '2px solid #E57373' },
+      'CLIENT NOTIFIÉ': green,
+      'NON DEMANDÉ':    danger,
+      // fallback variantes sans accents
+      'CLIENT NOTIFIE': green,
+      'CLIENT_NOTIFIE': green,
+      'NON DEMANDE':    danger,
+      'NON_DEMANDE':    danger
+    };
+    return styles[status] || { background: 'linear-gradient(135deg, #F5F5F5, #EEEEEE)', color: '#616161', border: '2px solid #bdbdbd' };
   }
 
   getServiceClass(serviceType: string): string {

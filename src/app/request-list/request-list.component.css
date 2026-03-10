@@ -252,6 +252,7 @@ tr.mat-row:nth-child(even) { background-color: #fafbfc; }
 .status-validated{ background: linear-gradient(135deg, #E8F5E9, #C8E6C9); color: #2E7D32; border: 2px solid #81C784; }
 .status-processed{ background: linear-gradient(135deg, #E3F2FD, #BBDEFB); color: #1565C0; border: 2px solid #64B5F6; }
 .status-rejected { background: linear-gradient(135deg, #FFEBEE, #FFCDD2); color: #C62828; border: 2px solid #E57373; }
+/* status-client_notifie et status-non_demande sont dans styles.css (global) */
 
 /* Service badge */
 .service-badge {

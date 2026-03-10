@@ -10,19 +10,21 @@
     <div class="header-divider"></div>
 
     <div class="header-title">
-      <p class="header-label">Détail de la Demande</p>
-      <h1 class="header-ref">{{ request.reference }}</h1>
+      <div class="header-title-content">
+        <span class="header-label">Détail de la demande</span>
+        <h1 class="header-ref">{{ request.reference }}</h1>
+      </div>
       <div class="header-badges">
         <span class="service-badge" [ngClass]="getServiceClass(request.serviceType)">
           {{ request.serviceType }}
         </span>
-        <span class="status-badge" [ngClass]="getStatusClass(request.status)">
-          {{ getStatusLabel(request.status) }}
+        <span class="status-badge" [ngStyle]="getStatusStyle(request.status)">
+          {{ getStatusIcon(request.status) }}{{ getStatusLabel(request.status) }}
         </span>
       </div>
     </div>
 
-    <button class="print-btn" *ngIf="!isAdmin" (click)="printRequest()" title="Imprimer / Exporter en PDF">
+    <button class="print-btn" *ngIf="!isAdmin && request.status !== 'PROCESSED'" (click)="printRequest()" title="Imprimer / Exporter en PDF">
       <img src="assets/print-pdf.png" alt="Imprimer PDF" class="print-icon-img">
       <span>Imprimer PDF</span>
     </button>
@@ -34,7 +36,7 @@
     <!-- Section 1 : Informations Client (saisies) -->
     <div class="info-card client-card">
       <div class="card-header client-header">
-        <div class="card-icon">👤</div>
+        <div class="card-icon"></div>
         <div>
           <h2>Informations Client</h2>
           <p class="card-subtitle">Données saisies par le client lors de la demande</p>
@@ -44,34 +46,34 @@
         <div class="info-grid">
 
           <div class="info-item">
-            <span class="info-label">📞 Téléphone</span>
+            <span class="info-label">Téléphone</span>
             <span class="info-value phone-value">{{ request.phoneNumber }}</span>
           </div>
 
           <div class="info-item">
-            <span class="info-label">👤 Nom Client</span>
+            <span class="info-label">Nom Client</span>
             <span class="info-value">{{ request.clientName || '—' }}</span>
           </div>
 
           <div class="info-item full-width">
-            <span class="info-label">✉️ Email</span>
+            <span class="info-label">Email</span>
             <span class="info-value email-value">{{ request.email || '—' }}</span>
           </div>
 
           <div class="info-item">
-            <span class="info-label">🏦 Type de Service</span>
+            <span class="info-label">Type de Service</span>
             <span class="service-badge" [ngClass]="getServiceClass(request.serviceType)">
               {{ request.serviceType }}
             </span>
           </div>
 
           <div class="info-item">
-            <span class="info-label">🔧 Type de Modification</span>
+            <span class="info-label">Type de Modification</span>
             <span class="info-value modification-value">{{ request.modificationType || '—' }}</span>
           </div>
 
           <div class="info-item full-width" *ngIf="request.otherMessage">
-            <span class="info-label">💬 Message</span>
+            <span class="info-label">Message</span>
             <span class="info-value message-value">{{ request.otherMessage }}</span>
           </div>
 
@@ -92,7 +94,7 @@
     <!-- Section 2 : Informations Système -->
     <div class="info-card system-card">
       <div class="card-header system-header">
-        <div class="card-icon">🖥️</div>
+        <div class="card-icon"></div>
         <div>
           <h2>Informations Système</h2>
           <p class="card-subtitle">Données récupérées depuis le système bancaire</p>
@@ -104,27 +106,27 @@
           <div class="info-grid">
 
             <div class="info-item">
-              <span class="info-label">🆔 Code Client (custIden)</span>
+              <span class="info-label">Code Client (custIden)</span>
               <span class="info-value cust-value">{{ request.custIden || '—' }}</span>
             </div>
 
             <div class="info-item">
-              <span class="info-label">👤 Prénom</span>
+              <span class="info-label">Prénom</span>
               <span class="info-value">{{ request.firstName || '—' }}</span>
             </div>
 
             <div class="info-item">
-              <span class="info-label">👤 Nom</span>
+              <span class="info-label">Nom</span>
               <span class="info-value">{{ request.lastName || '—' }}</span>
             </div>
 
             <div class="info-item full-width">
-              <span class="info-label">✉️ Email Système</span>
+              <span class="info-label">Email Système</span>
               <span class="info-value email-value">{{ request.emailSys || '—' }}</span>
             </div>
 
             <div class="info-item">
-              <span class="info-label">🏦 Agence</span>
+              <span class="info-label">Agence</span>
               <span class="info-value">{{ request.agence || '—' }}</span>
             </div>
 
@@ -174,10 +176,11 @@
       <div *ngIf="!loadingFiles && jointFiles.length > 0" class="joint-file-list">
         <p class="file-list-title">Fichiers joints ({{ jointFiles.length }})</p>
         <div class="joint-file-item" *ngFor="let name of jointFiles" (click)="openPreview(name)" title="Cliquer pour prévisualiser">
-          <span class="file-icon">{{ getJointFileIcon(name) }}</span>
+          <span class="file-icon" *ngIf="getJointFileIcon(name) !== 'assets/pdf-icon.png'">{{ getJointFileIcon(name) }}</span>
+          <img *ngIf="getJointFileIcon(name) === 'assets/pdf-icon.png'" src="assets/pdf-icon.png" class="file-icon-img" alt="PDF">
           <div class="file-info">
             <span class="file-name">{{ name }}</span>
-            <span class="file-size joint-hint">👁️ Cliquer pour aperçu</span>
+            <span class="file-size joint-hint">Cliquer pour aperçu</span>
           </div>
           <span class="preview-arrow">›</span>
         </div>
@@ -204,6 +207,33 @@
 
     <div class="upload-card-body">
 
+      <!-- Message d'erreur type de fichier -->
+      <div *ngIf="uploadError" class="upload-error">
+        ⚠️ {{ uploadError }}
+      </div>
+
+      <!-- Liste des fichiers sélectionnés (en attente d'upload) -->
+      <div *ngIf="selectedFiles.length > 0 && !uploadSuccess" class="file-list">
+        <p class="file-list-title">Fichiers sélectionnés ({{ selectedFiles.length }})</p>
+        <div class="file-item" *ngFor="let file of selectedFiles; let i = index">
+          <span class="file-icon" *ngIf="getFileIcon(file) !== 'assets/pdf-icon.png'">{{ getFileIcon(file) }}</span>
+          <img *ngIf="getFileIcon(file) === 'assets/pdf-icon.png'" src="assets/pdf-icon.png" class="file-icon-img" alt="PDF">
+          <div class="file-info">
+            <span class="file-name">{{ file.name }}</span>
+            <span class="file-size">{{ formatSize(file.size) }}</span>
+          </div>
+          <button class="remove-btn" (click)="removeFile(i)" title="Retirer">✕</button>
+        </div>
+      </div>
+
+      <!-- Bouton upload -->
+      <div *ngIf="selectedFiles.length > 0 && !uploadSuccess" class="upload-actions">
+        <button class="upload-btn" (click)="uploadFiles()" [disabled]="uploading">
+          <span *ngIf="!uploading">⬆️ Charger les fichiers</span>
+          <span *ngIf="uploading" class="spinner-text">⏳ Chargement en cours...</span>
+        </button>
+      </div>
+
       <!-- Zone drag & drop -->
       <div *ngIf="!uploadSuccess"
            class="drop-zone"
@@ -221,37 +251,12 @@
         </label>
       </div>
 
-      <!-- Message d'erreur type de fichier -->
-      <div *ngIf="uploadError" class="upload-error">
-        ⚠️ {{ uploadError }}
-      </div>
-
-      <!-- Liste des fichiers sélectionnés (en attente d'upload) -->
-      <div *ngIf="selectedFiles.length > 0 && !uploadSuccess" class="file-list">
-        <p class="file-list-title">Fichiers sélectionnés ({{ selectedFiles.length }})</p>
-        <div class="file-item" *ngFor="let file of selectedFiles; let i = index">
-          <span class="file-icon">{{ getFileIcon(file) }}</span>
-          <div class="file-info">
-            <span class="file-name">{{ file.name }}</span>
-            <span class="file-size">{{ formatSize(file.size) }}</span>
-          </div>
-          <button class="remove-btn" (click)="removeFile(i)" title="Retirer">✕</button>
-        </div>
-      </div>
-
-      <!-- Bouton upload -->
-      <div *ngIf="selectedFiles.length > 0 && !uploadSuccess" class="upload-actions">
-        <button class="upload-btn" (click)="uploadFiles()" [disabled]="uploading">
-          <span *ngIf="!uploading">⬆️ Charger les fichiers</span>
-          <span *ngIf="uploading" class="spinner-text">⏳ Chargement en cours...</span>
-        </button>
-      </div>
-
       <!-- ✅ Upload réussi : liste des fichiers uploadés -->
-      <div *ngIf="uploadSuccess" class="upload-success-block">
+      <div class="upload-success-block" *ngIf="uploadSuccess">
         <div class="success-header">✅ Justificatifs chargés avec succès</div>
         <div class="uploaded-file-item" *ngFor="let name of uploadedFileNames">
-          <span class="file-icon">📄</span>
+          <span class="file-icon" *ngIf="getJointFileIcon(name) !== 'assets/pdf-icon.png'">{{ getJointFileIcon(name) }}</span>
+          <img *ngIf="getJointFileIcon(name) === 'assets/pdf-icon.png'" src="assets/pdf-icon.png" class="file-icon-img" alt="PDF">
           <span class="file-name">{{ name }}</span>
         </div>
         <div class="change-file-action" *ngIf="!closeSuccess">
@@ -298,7 +303,8 @@
     <!-- En-tête de la modale -->
     <div class="preview-modal-header">
       <span class="preview-title">
-        <span>{{ getJointFileIcon(previewName) }}</span>
+        <span *ngIf="getJointFileIcon(previewName) !== 'assets/pdf-icon.png'">{{ getJointFileIcon(previewName) }}</span>
+        <img *ngIf="getJointFileIcon(previewName) === 'assets/pdf-icon.png'" src="assets/pdf-icon.png" class="file-icon-img" alt="PDF">
         {{ previewName }}
       </span>
       <button class="preview-close-btn" (click)="closePreview()" title="Fermer">×</button>

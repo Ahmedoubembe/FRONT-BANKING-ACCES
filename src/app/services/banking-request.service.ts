@@ -54,11 +54,23 @@ export class BankingRequestService {
 
   /** Récupère la liste des noms de fichiers justificatifs d'une demande */
   getJustificatifs(id: number): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}/${id}/justificatifs`);
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http
+      .get<{ success: boolean; data: { id: number; fileName: string; fileSize: number; uploadedAt: string }[] }>(
+        `${this.baseUrl}/${id}/justificatifs`,
+        { headers }
+      )
+      .pipe(map(response => (response.data || []).map(f => f.fileName)));
   }
 
-  /** Retourne l'URL pour accéder à un fichier justificatif */
-  getJustificatifUrl(id: number, fileName: string): string {
-    return `${this.baseUrl}/${id}/justificatifs/${encodeURIComponent(fileName)}`;
+  /** Télécharge un fichier justificatif en tant que Blob (contourne X-Frame-Options) */
+  downloadJustificatifBlob(id: number, fileName: string): Observable<Blob> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.get(
+      `${this.baseUrl}/${id}/justificatifs/${encodeURIComponent(fileName)}`,
+      { headers, responseType: 'blob' }
+    );
   }
 }
