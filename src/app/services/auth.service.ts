@@ -43,6 +43,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    sessionStorage.clear(); // Réinitialise les préférences de session (colonnes, etc.)
     this.router.navigate(['/login']);
   }
 
@@ -78,5 +79,9 @@ export class AuthService {
 
   isGestionnaire(): boolean {
     return this.hasRole('ROLE_GESTIONNAIRE');
+  }
+
+  isChefAgence(): boolean {
+    return this.hasRole('ROLE_CHEF_AGENCE');
   }
 }

@@ -21,16 +21,24 @@ export class BankingRequestService {
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
-  /** Récupère les demandes filtrées par agence de l'utilisateur connecté. */
+  /** Récupère les demandes selon le rôle de l'utilisateur connecté.
+   *  ROLE_ADMIN → /all (toutes les demandes)
+   *  ROLE_CHEF_AGENCE → /agence/{agence} (filtrées par agence)
+   */
   getRequestsByAgence(): Observable<BankingRequest[]> {
-    const agence = this.authService.getAgence();
     const token = this.authService.getToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    if (this.authService.isAdmin()) {
+      return this.http
+        .get<BankingRequestResponse>(`${this.baseUrl}/all`, { headers })
+        .pipe(map((response: BankingRequestResponse) => response.data));
+    }
+
+    const agence = this.authService.getAgence();
     if (!agence) {
       throw new Error('Aucune agence trouvée pour cet utilisateur.');
     }
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
     return this.http
       .get<BankingRequestResponse>(`${this.baseUrl}/agence/${encodeURIComponent(agence)}`, { headers })
       .pipe(map((response: BankingRequestResponse) => response.data));

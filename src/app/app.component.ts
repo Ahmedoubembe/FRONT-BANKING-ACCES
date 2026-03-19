@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import Swal from 'sweetalert2';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -19,7 +20,20 @@ export class AppComponent {
   }
 
   logout(): void {
-    this.authService.logout();
+    Swal.fire({
+      title: 'Déconnexion',
+      text: 'Êtes-vous sûr de vouloir vous déconnecter ?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#1a237e',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, me déconnecter',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.authService.logout();
+      }
+    });
   }
 }
 

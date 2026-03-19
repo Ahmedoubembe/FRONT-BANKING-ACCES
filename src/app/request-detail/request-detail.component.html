@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <button class="print-btn" *ngIf="!isAdmin && request.status !== 'PROCESSED'" (click)="printRequest()" title="Imprimer / Exporter en PDF">
+    <button class="print-btn" *ngIf="!isReadOnly && request.status !== 'PROCESSED'" (click)="printRequest()" title="Imprimer / Exporter en PDF">
       <img src="assets/print-pdf.png" alt="Imprimer PDF" class="print-icon-img">
       <span>Imprimer PDF</span>
     </button>
@@ -130,6 +130,16 @@
               <span class="info-value">{{ request.agence || '—' }}</span>
             </div>
 
+            <div class="info-item">
+              <span class="info-label">Statut Création</span>
+              <span class="info-value">{{ request.status_create || '—' }}</span>
+            </div>
+
+            <div class="info-item">
+              <span class="info-label">Dernière Notif</span>
+              <span class="info-value">{{ request.status_notif_last_date ? (request.status_notif_last_date | date:'dd/MM/yyyy HH:mm') : '—' }}</span>
+            </div>
+
           </div>
         </div>
 
@@ -188,14 +198,13 @@
     </div>
   </div>
 
-  <!-- Bandeau lecture seule pour ROLE_ADMIN (demandes non traitées) -->
-  <div *ngIf="isAdmin && request.status !== 'PROCESSED'" class="admin-readonly-banner">
-    🔒 Mode consultation — Vous êtes connecté en tant qu’<strong>Administrateur</strong>.
-    Les actions (chargement de fichiers, clôture, impression PDF) sont réservées aux gestionnaires.
+  <!-- Bandeau lecture seule pour ROLE_ADMIN et ROLE_CHEF_AGENCE (demandes non traitées) -->
+  <div *ngIf="isReadOnly && request.status !== 'PROCESSED'" class="admin-readonly-banner">
+    🔒 Mode consultation — Vous n'avez pas les droits pour effectuer des actions.
   </div>
 
   <!-- Section upload : visible uniquement pour ROLE_GESTIONNAIRE et demandes non TRAITÉES -->
-  <div *ngIf="!isAdmin && request.status !== 'PROCESSED'" class="upload-card" [class.closed]="closeSuccess">
+  <div *ngIf="!isReadOnly && request.status !== 'PROCESSED'" class="upload-card" [class.closed]="closeSuccess">
 
     <div class="upload-card-header">
       <div class="card-icon"><img src="assets/paperclip.png" alt="Justificatifs" class="card-icon-img"></div>

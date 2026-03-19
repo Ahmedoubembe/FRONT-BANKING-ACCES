@@ -45,9 +45,9 @@ export class RequestDetailComponent implements OnInit {
     private sanitizer: NgDomSanitizer
   ) {}
 
-  /** Retourne true si l'utilisateur connecté a le rôle ROLE_ADMIN */
-  get isAdmin(): boolean {
-    return this.authService.isAdmin();
+  /** Retourne true si l'utilisateur est en mode lecture seule (ROLE_ADMIN ou ROLE_CHEF_AGENCE) */
+  get isReadOnly(): boolean {
+    return this.authService.isAdmin() || this.authService.isChefAgence();
   }
 
   ngOnInit(): void {

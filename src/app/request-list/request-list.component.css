@@ -85,21 +85,193 @@ h1 {
   border: 1px solid rgba(30, 60, 114, 0.1);
 }
 
+/* ── Conteneur table + paginator ── */
+.table-wrapper {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.5s ease-out;
+  background: white;
+  /* PAS de overflow:hidden ici → le dropdown du paginator peut s'afficher librement */
+}
+
 table {
   width: 100%;
   background: white;
-  border-radius: 12px;
-  overflow: hidden;
+  overflow: hidden;           /* uniquement sur le tableau */
+  border-radius: 12px 12px 0 0;
+}
+/* ── Toolbar (recherche + bouton colonnes) ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 .search-field {
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 24px;
+  flex: 1;
+  min-width: 200px;
+  max-width: 420px;
+  margin-bottom: 0;
   background: white;
   border-radius: 30px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+}
+
+/* ── Bouton toggle colonnes ── */
+.col-select-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 48px;
+  padding: 0 20px;
+  background: white;
+  border: 1.5px solid #1a237e;
+  border-radius: 24px;
+  color: #1a237e;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(26, 35, 126, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.col-select-btn:hover {
+  background: rgba(26, 35, 126, 0.06);
+  box-shadow: 0 4px 14px rgba(26, 35, 126, 0.18);
+  transform: translateY(-1px);
+}
+
+.col-select-btn .arrow-icon {
+  font-size: 20px;
+  transition: transform 0.2s ease;
+}
+
+/* ── Panneau inline de colonnes ── */
+.column-panel {
+  background: white;
+  border: 1px solid rgba(26, 35, 126, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+  animation: slideDown 0.25s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.column-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+  border-bottom: 1px solid rgba(26, 35, 126, 0.12);
+}
+
+.column-panel-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #1a237e;
+}
+
+.column-panel-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.panel-action-btn {
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1.5px solid;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.panel-action-btn.primary {
+  background: white;
+  border-color: #1a237e;
+  color: #1a237e;
+}
+
+.panel-action-btn.primary:hover {
+  background: #1a237e;
+  color: white;
+}
+
+.panel-action-btn.warn {
+  background: white;
+  border-color: #c62828;
+  color: #c62828;
+}
+
+.panel-action-btn.warn:hover {
+  background: #c62828;
+  color: white;
+}
+
+/* ── Chips de sélection (disposition horizontale) ── */
+.column-panel-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px 20px;
+}
+
+.col-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px 7px 10px;
+  border-radius: 24px;
+  border: 1.5px solid #c5cae9;
+  background: #f5f6ff;
+  color: #5c6bc0;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.col-chip:hover {
+  border-color: #3949ab;
+  background: #e8eaf6;
+  color: #1a237e;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(26, 35, 126, 0.15);
+}
+
+.col-chip.selected {
+  background: linear-gradient(135deg, #1a237e, #3949ab);
+  border-color: #1a237e;
+  color: white;
+  box-shadow: 0 3px 10px rgba(26, 35, 126, 0.3);
+}
+
+.col-chip.selected:hover {
+  background: linear-gradient(135deg, #283593, #3f51b5);
+}
+
+.chip-icon {
+  font-size: 17px !important;
+  width: 17px !important;
+  height: 17px !important;
+  line-height: 17px !important;
 }
 
 .search-field:hover {
@@ -300,6 +472,102 @@ tr.mat-row:nth-child(even) { background-color: #fafbfc; }
   height: 14px !important;
   line-height: 14px !important;
   color: #78909c;
+}
+
+/* ── Paginator Custom ── */
+.custom-paginator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 14px 24px;
+  background: #fafbfc;
+  border-top: 1px solid rgba(30, 60, 114, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #37474f;
+  font-size: 13px;
+  border-radius: 0 0 12px 12px;
+}
+
+.custom-paginator .paginator-size {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.custom-paginator select {
+  padding: 6px 30px 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #cfd8dc;
+  color: #1a237e;
+  font-weight: 600;
+  font-family: inherit;
+  font-size: 13px;
+  background-color: white;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a237e'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.custom-paginator select:hover {
+  border-color: #90a4ae;
+}
+
+.custom-paginator select:focus {
+  border-color: #1a237e;
+  box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+}
+
+.custom-paginator .paginator-range {
+  font-weight: 500;
+  color: #546e7a;
+  min-width: 100px;
+  text-align: center;
+}
+
+.custom-paginator .paginator-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.paginator-btn {
+  background: white;
+  border: 1px solid #cfd8dc;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #1a237e;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.paginator-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.paginator-btn:hover:not(:disabled) {
+  background: #f0f4f8;
+  border-color: #b0bec5;
+  color: #1565c0;
+}
+
+.paginator-btn:disabled {
+  background: #f5f7fa;
+  color: #b0bec5;
+  border-color: #e4e8eb;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 @keyframes fadeInUp {

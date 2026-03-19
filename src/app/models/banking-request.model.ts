@@ -16,4 +16,6 @@ export interface BankingRequest {
   lastName?: string;
   agence?: string;
   reference?: string;
+  status_create?: string | null;
+  status_notif_last_date?: string | null;
 }
